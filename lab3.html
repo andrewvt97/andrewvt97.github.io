@@ -2,24 +2,104 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Professional Experience</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
-    <center>
-        <h1> About Me</h1>
-        <p> Hi! I'm Andrew Thomas, a full-stack developer with a passion for problem solving and creative thinking. I am currently a senior studying computer science 
-            at the College of Staten Island as part of the Macaulay Honors College. I am skilled in
-            a number of programming languages and technologies including C++, C, Java, Javascript, Python, React, Node, Git, Github, SQL, HTML, and CSS.
-            I have used these skills to develop several projects including a drawing application, an application for musicians to learn harmony, and a full-stack
-            application that allows readers to simplify or translate texts in pdfs for better readability. In addition, I am also involved in research focused on 
-            machine learning. Currently, I am using models to predict house pricing in New York. I also am the president of the CSI Computer Science Club, where I 
-            host workshops and knowledge-based games on computer science. I began my professional career tutoring college students in computer science and math, then went on
-            to a software engineering internship at a startup called Unadat, before my most recent internship with Walmart Global Tech where I built an API and created 
-            a page implementing its functionality for the accounts receivable team.
+    <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">andrewvt97</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link" href="./index.html">Home</a>
+                <a class="nav-link active" aria-current="page" href="#">Professional Experience</a>
+                <a class="nav-link" href="https://github.com/andrewvt97">Github</a>
+                <a class="nav-link"  href="https://www.linkedin.com/in/andrewvt97/">Linkedin</a>
+              </div>
+            </div>
+          </div>
+      </nav>
+    <div class = "container">
+        <div class = "row"> 
+            <!-- Jumbotron code -->
+            <div class="container py-4 bg-light"> 
+                <div class = "p-5 mb-4 bg-body-tertiary rounded-3">
+                    <div class = "container-fluid py-3">
+                        <h1 class="display-4"> Work and Research Experience</h1>
+                        <h4> A brief overview of my work and research experience during my career journey.</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class = "row"> 
+            <div class = "col-md-3 mx-auto"> 
+                <h4> Career Journey </h4>
+            </div>   
+        </div>
+        <div class = "row">
+            <div class = "col-md-10 mx-auto"> 
+                <p> I began my professional career as a sophomore in college, joining the Office of Academic Support at
+                    the College of Staten Island as a tutor in computer science and math. I tutored other college students 
+                    in algebra, calculus 1 and 2, intro to
+                    computer science, networking, and data structures. Soon after, I received an opportunity to participate in the 
+                    CUNY Career Launch program as a software engineering intern for the summer of that year, and join a startup 
+                    in New York City called Unadat, a company that seeks to promote financial responsibility with 
+                    custom goal saving plans. I worked on allowing users to creating saving challenges as part of an Agile team using Asana.
+                    The following summer, I was able to secure a second internship with Walmart 
+                    Global Tech in Bentonville, Arkansas as a software engineer. I worked full-stack with Spring Boot and SQL, as well as React. There, I worked
+                    with a team in the accounts receivable department using Jira. Most recently, I have started research in machine learning. 
+                    Under the guidance of my advisor, Dr. Yumei Huo, I analyzed two million rows of housing data in New
+                    York City and built a model using Random Forest Regressor that estimates the price of a house as a tool to assist
+                    buyers and sellers of real estate.
+                </p>
+            </div>
+        </div>
+        <div class = "row"> 
+            <div class = "col-md-3 mx-auto"> 
+                <h4> Major Work and Research Projects </h4>
+            </div>   
+        </div>
+        <div class = "row mx-auto" > 
+            <div class = "col-md-10 mx-auto"> 
+                <ul class="list-group list-group-horizontal-lg">
+                    <li class="list-group-item">
+                        <p> Saving Challenges </p>
+                        <img src="Challenge.png" class="img-fluid equal-img" alt="...">
+                    </li>
+                    <li class="list-group-item"> 
+                        <p> Retail Link Agreements </p>
+                        <img src="RetailLink.jpg" class="img-fluid equal-img" alt="...">
+                    </li>
+                    <li class="list-group-item"> 
+                        <p> Housing Price Research </p>
+                        <img src="Housing.jpg" class="img-fluid equal-img" alt="...">
+                    </li>
+                  </ul>
+            </div>   
+        </div>
+        <div class = "row"> 
+            <div class = "col-md-12"> 
+                <footer class = "pt-3 mt-4 text-body-secondary border-top"> Designed by Andrew Thomas © February 17, 2025</footer>
+            </div>
             
-        </p>
-    </center>
+        </div>
+
+        
+    </div>
+    
+        
+        
+    
     
 </body>
 </html>
