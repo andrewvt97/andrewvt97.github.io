@@ -9,59 +9,105 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <table width="100%">
-            <tr>
-            <td><h1 style="margin-top: 0.3em; margin-bottom: 0.3em;">Andrew Thomas</h1></td>
-            <td style = "text-align: right">
-                <a href ="./README.md" style="font-weight:bold; color: black;"> Lab 1</a> |
-                <a href ="./lab3.html" style="font-weight:bold; color: black;"> Lab 3</a> |
-                <a href="https://github.com/andrewvt97" style="font-weight:bold; color: black;">Github</a> |
-                <a href="https://www.linkedin.com/in/andrewvt97/" style="font-weight:bold; color: black;">LinkedIn</a>
-            </td>
-            </tr>
-            <tr>
-                <td ><h4 style="margin: 0 0 0.1em 0;">Senior at Macaulay Honors College at College of Staten Island</h4></td>
-            </tr>
-        </table>
+        <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand">andrewvt97</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                  <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link"  href="lab3.html">Lab 3</a>
+                    <a class="nav-link" href="https://github.com/andrewvt97">Github</a>
+                    <a class="nav-link"  href="https://www.linkedin.com/in/andrewvt97/">Linkedin</a>
+                  </div>
+                </div>
+              </div>
+          </nav>
 
+          <div class="row justify-content-center"> 
+            <div class="col-lg-10 py-2"> 
+                <div class="p-5 mb-0 bg-body-tertiary rounded-3">
+                   <div class="p-4">
+                        <h1 class="display-4"> Andrew Thomas</h1>
+                        <h4> Senior at Macaulay Honors College at College of Staten Island.</h4>
+                   </div>
+                       
+                </div>
+            </div>
+        </div>
 
-        <h2 style="text-align: center; margin-top: 0; margin-bottom: 0.5em;"> About Me</h2>
-        <p style="text-align: center; max-width: 90%; margin: 0 auto"> Hi! I'm Andrew Thomas, a full-stack developer with a passion for problem solving and creative thinking. I am currently a senior studying computer science 
-            at the College of Staten Island as part of the Macaulay Honors College. I am skilled in
-            a number of programming languages and technologies including C++, C, Java, Javascript, Python, React, Node, Git, Github, SQL, HTML, and CSS.
-            I have used these skills to develop several projects including a drawing application, an application for musicians to learn harmony, and a full-stack
-            application that allows readers to simplify or translate texts in pdfs for better readability. In addition, I am also involved in research focused on 
-            machine learning. Currently, I am using models to predict house pricing in New York. I also am the president of the CSI Computer Science Club, where I 
-            host workshops and knowledge-based games on computer science. I began my professional career tutoring college students in computer science and math, then went on
-            to a software engineering internship at a startup called Unadat, before my most recent internship with Walmart Global Tech where I built an API and created 
-            a page implementing its functionality for the accounts receivable team.     
-        </p>
-        
+        <div class = "container">
+            <div class = "row"> 
+                <div class = "col-md-auto mt-2 mx-auto"> 
+                    <h4> About Me </h4>
+                </div>   
+            </div>
+            <div class = "row">
+                <div class = "col-md-10 mx-auto"> 
+                    <p> Hi! I'm Andrew Thomas, a full-stack developer with a passion for problem solving and creative thinking. I am currently a senior studying computer science 
+                        at the College of Staten Island as part of the Macaulay Honors College. I am skilled in
+                        a number of programming languages and technologies including C++, C, Java, Javascript, Python, React, Node, Git, Github, SQL, HTML, and CSS.
+                        I have used these skills to develop several projects including a drawing application, an application for musicians to learn harmony, and a full-stack
+                        application that allows readers to simplify or translate texts in pdfs for better readability. In addition, I am also involved in research focused on 
+                        machine learning. Currently, I am using models to predict house pricing in New York. I also am the president of the CSI Computer Science Club, where I 
+                        host workshops and knowledge-based games on computer science. I began my professional career tutoring college students in computer science and math, then went on
+                        to a software engineering internship at a startup called Unadat, before my most recent internship with Walmart Global Tech where I built an API and created 
+                        a page implementing its functionality for the accounts receivable team.
+                    </p>
+                </div>
+            </div>
+            <div class = "row"> 
+                <div class = "col-md-auto mt-3 mb-2 mx-auto"> 
+                    <h4> Notable Projects </h4>
+                </div>   
+            </div>
+            <div class = "row mx-auto" > 
+                <div class = "col-md-auto mx-auto"> 
+                    <ul class="list-group list-group-horizontal-lg">
+                        <li class="list-group-item text-center col-lg-4 mx-auto">
+                            <a href="https://andrewvt97.github.io/Etch-A-Sketch/" class = "fw-bold text-dark">Etch-A-Sketch</a>
+                            <figure class="figure">
+                                <img src="Etch-A-Sketch.png" class="img-fluid equal-img-home rounded rounded border border-dark mb-2 mt-3" alt="...">
+                                <figcaption class="figure-caption">Pixelated drawing app designed in Javascript, HTML, and CSS.</figcaption>
+                            </figure>
+                        </li>
+                        <li class="list-group-item text-center col-lg-4 mx-auto"> 
+                            <a href="https://deft-bubblegum-393b13.netlify.app/" class = "fw-bold text-dark">Harmonious</a>
+                            <!-- <p class="fw-bold"> Harmonious </p> -->
+                            <figure class="figure">
+                                <img src="Harmonious.png" class="img-fluid  equal-img-home rounded rounded border border-dark mb-2 mt-3" alt="...">
+                                <figcaption class="figure-caption">Tool for musicians to generate harmonies for songs, designed in React.</figcaption>
+                            </figure>
+                        </li>
+                        <li class="list-group-item text-center col-lg-4 mx-auto"> 
+                            <a href="https://github.com/andrewvt97/Assistive-Reading-App" class = "fw-bold text-dark">Assistive Reading App</a>
+                            <figure class="figure">
+                                <img src="ReadingTool.png" class="img-fluid  equal-img-home rounded rounded border border-dark mb-2 mt-3" alt="...">
+                                <figcaption class="figure-caption">Reading website with simplified English page versions alongside original text, designed in React, Flask, and MongoDB.</figcaption>
+                            </figure>
+                        </li>
+                    </ul>
+                </div>   
+            </div>
+    
+         
+            <div class="row"> 
+                <div class="col-md-12 mt-2"> 
+                    <hr class="mt-4 mb-0 border border-secondary opacity-25" >
+                    <footer class="pt-3 text-body-secondary"> 
+                        Designed by Andrew Thomas © February 17, 2025
+                    </footer>
+                </div>
+            </div>
+    
+            
+        </div>
 
-        <h2 style="text-align: center; margin-top: 1.3em;"> Notable Projects</h2>
-        <ul type="none" style="display: flex; list-style: none; gap: 5vw; text-align: center; padding: 0; justify-content: center;">
-            <li style="max-width: 300px; text-align: center;">
-                <img src="Etch-A-Sketch.png" alt="Drawing App"  style="width: 100%; max-width: 300px; height: 90%;"> <br>
-                <a href="https://andrewvt97.github.io/Etch-A-Sketch/" style="font-weight: bold; color: black;">Etch-A-Sketch</a>
-                <p style="margin-top: 0.2em"> Pixelated drawing app designed in Javascript, HTML, and CSS. </p>
-            </li>
-            <li style="max-width: 300px; text-align: center;">
-                <img src="Harmonious.png" alt="Harmonious"style="width: 100%; max-width: 300px; height: 90%;"> <br>
-                <a href="https://deft-bubblegum-393b13.netlify.app/" style="font-weight: bold; color: black;">Harmonious</a>
-                <p style="margin-top: 0.2em"> Tool for musicians to generate harmonies for songs, designed in React.</p>
-            </li>
-            <li style="max-width: 300px; text-align: center;">
-                <img src="ReadingTool.png" alt="Assistive Reading App" style="width: 100%; max-width: 300px; height: 90%;"> <br>
-                <a href="https://github.com/andrewvt97/Assistive-Reading-App" style="font-weight: bold; color: black;">Assistive Reading App</a>
-                <p style="margin-top: 0.2em"> Reading website with simplified English page versions alongside original text, designed in React, Flask, and MongoDB. </p>
-            </li>
-        </ul>
-
-        <hr style="margin-top: 4.4vw;">
-        <p style="text-align: center;"> Designed by Andrew Thomas © February 17, 2025</p>
-        
     </body>
 </html>
 
