@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Items</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">andrewvt97</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link" href="./index.html">Home</a>
+                <a class="nav-link" href="./lab3.html">Professional Experience</a>
+                <a class="nav-link active" aria-current="page" href="#">Andrew's Amazing Store</a>
+                <a class="nav-link" href="https://github.com/andrewvt97">Github</a>
+                <a class="nav-link"  href="https://www.linkedin.com/in/andrewvt97/">Linkedin</a>
+              </div>
+            </div>
+          </div>
+      </nav>
+
+    <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4">Andrew's Amazing Store</h1>
+            <h7 class="lead">Order anything, tariff free! (Don't ask me how) </h7>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 mt-5 mb-3 py-4 px-5 bg-secondary rounded-3"> 
+            <div class="pt-3 pb-3 px-5">
+                <h1 class="display-4 text-center">Order Confirmation</h1> 
+    
+                <div class="pt-3 px-4">
+                    <h4 id="orderMessage"></h4>  
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class = "d-flex flex-wrap justify-content-center text-center align-items-center py-3 mt-5 border-top">
+        Designed by Andrew Thomas © March 19, 2025
+    </footer>
+    <script>
+        let name;
+        let item;
+        let numItems;
+        now = new Date;
+        hour = now.getHours();
+        let arrivalDate = new Date(now); 
+        arrivalDate.setDate(arrivalDate.getDate() + 7); // Add 7 days
+
+        let options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+        let formattedDate = arrivalDate.toLocaleDateString("en-US", options);
+        let greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+
+        alert("Welcome to Andrew's Amazing Store!")
+        name = window.prompt("Please enter your name", "Anonymous");
+        item = window.prompt("Please enter your requested item", "Sunscreen");
+
+        let errorString = ""
+        do {
+            numItems = window.prompt(errorString + "Please enter the amount of items you would like (1-99)", "1");
+            errorString = "Incorrect Range! "
+            
+            numItems = parseInt(numItems, 10);
+        } while (isNaN(numItems) || numItems < 1 || numItems > 99);
+
+        
+        let orderMessageDiv = document.getElementById("orderMessage");
+
+        // append elements safely
+        let thankYouMsg = document.createElement("p");
+        thankYouMsg.textContent = `${greeting} ${name}, thank you for ordering!`;
+        thankYouMsg.classList.add("lead");
+
+        let orderDetails = document.createElement("p");
+        orderDetails.textContent = `You ordered ${numItems} unit(s) of ${item}.`;
+
+        let arrivalDetails = document.createElement("p");
+        arrivalDetails.textContent = `Your shipment will arrive on ${formattedDate}.`;
+
+        // Append elements to the container
+        orderMessageDiv.appendChild(thankYouMsg);
+        orderMessageDiv.appendChild(orderDetails);
+        orderMessageDiv.appendChild(arrivalDetails);
+    </script>
+</body>
+</html>
