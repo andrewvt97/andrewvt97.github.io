@@ -66,12 +66,12 @@
         let greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
         alert("Welcome to Andrew's Amazing Store!")
-        name = window.prompt("Please enter your name", "Anonymous");
-        item = window.prompt("Please enter your requested item", "Sunscreen");
+        name = window.prompt("Please enter your name:", "Anonymous");
+        item = window.prompt("Please enter your requested item:", "Sunscreen");
 
         let errorString = ""
         do {
-            numItems = window.prompt(errorString + "Please enter the amount of items you would like (1-99)", "1");
+            numItems = window.prompt(errorString + "Please enter the amount of items you would like (1-99):", "1");
             errorString = "Incorrect Range! "
             
             numItems = parseInt(numItems, 10);
@@ -86,7 +86,7 @@
         thankYouMsg.classList.add("lead");
 
         let orderDetails = document.createElement("p");
-        orderDetails.textContent = `You ordered ${numItems} unit(s) of ${item}.`;
+        orderDetails.textContent = `You ordered ${numItems} unit(s) of the item ${item}.`;
 
         let arrivalDetails = document.createElement("p");
         arrivalDetails.textContent = `Your shipment will arrive on ${formattedDate}.`;
