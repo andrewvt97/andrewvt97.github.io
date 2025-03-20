@@ -53,48 +53,90 @@
         Designed by Andrew Thomas © March 19, 2025
     </footer>
     <script>
-        let name;
-        let item;
-        let numItems;
-        now = new Date;
-        hour = now.getHours();
-        let arrivalDate = new Date(now); 
-        arrivalDate.setDate(arrivalDate.getDate() + 7); // Add 7 days
-
-        let options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
-        let formattedDate = arrivalDate.toLocaleDateString("en-US", options);
-        let greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-
-        alert("Welcome to Andrew's Amazing Store!")
-        name = window.prompt("Please enter your name:", "Anonymous");
-        item = window.prompt("Please enter your requested item:", "Sunscreen");
-
-        let errorString = ""
-        do {
-            numItems = window.prompt(errorString + "Please enter the amount of items you would like (1-99):", "1");
-            errorString = "Incorrect Range! "
-            
-            numItems = parseInt(numItems, 10);
-        } while (isNaN(numItems) || numItems < 1 || numItems > 99);
 
         
-        let orderMessageDiv = document.getElementById("orderMessage");
+        window.addEventListener("beforeunload", function () { // clear session on close
+            sessionStorage.clear();
+        });
 
-        // append elements safely
-        let thankYouMsg = document.createElement("p");
-        thankYouMsg.textContent = `${greeting} ${name}, thank you for ordering!`;
-        thankYouMsg.classList.add("lead");
+        window.onload = function () {
+            sessionStorage.clear(); // Reset session data every time the store page loads
 
-        let orderDetails = document.createElement("p");
-        orderDetails.textContent = `You ordered ${numItems} unit(s) of the item ${item}.`;
+            let name, item, numItems;
+            let now = new Date();
+            let hour = now.getHours();
+            let promptsCompleted = false; 
+            let arrivalDate = new Date(now);
+            arrivalDate.setDate(arrivalDate.getDate() + 7);
 
-        let arrivalDetails = document.createElement("p");
-        arrivalDetails.textContent = `Your shipment will arrive on ${formattedDate}.`;
+            let options = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
+            let formattedDate = arrivalDate.toLocaleDateString("en-US", options);
+            let greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
 
-        // Append elements to the container
-        orderMessageDiv.appendChild(thankYouMsg);
-        orderMessageDiv.appendChild(orderDetails);
-        orderMessageDiv.appendChild(arrivalDetails);
+            document.body.style.display = "none";
+            alert("Welcome to Andrew's Amazing Store!");
+
+
+            do {
+                name = window.prompt("Please enter your name:", "Anonymous");
+                if (name === null) {
+                    alert("You must enter a name to continue.");
+                    location.reload(); // Restart the page if the user closes
+                    return;
+                }
+            } while (!name.trim());
+
+
+            do {
+                item = window.prompt("Please enter your requested item:", "Sunscreen");
+                if (item === null) {
+                    alert("You must enter an item to continue.");
+                    location.reload();
+                    return;
+                }
+            } while (!item.trim());
+
+            
+            let errorString = "";
+            do {
+                numItems = window.prompt(errorString + "Please enter the amount of items you would like (1-99):", "1");
+
+                if (numItems === null) {
+                    alert("You must enter a valid quantity to continue.");
+                    location.reload();
+                    return;
+                }
+
+                numItems = parseInt(numItems, 10);
+                if (isNaN(numItems) || numItems < 1 || numItems > 99) {
+                    errorString = "Incorrect Range! ";
+                }
+            } while (isNaN(numItems) || numItems < 1 || numItems > 99);
+            
+            
+            let orderMessageDiv = document.getElementById("orderMessage");
+
+            let thankYouMsg = document.createElement("p");
+            thankYouMsg.textContent = `${greeting} ${name}, thank you for ordering!`;
+            thankYouMsg.classList.add("lead");
+
+            let orderDetails = document.createElement("p");
+            orderDetails.textContent = `You ordered ${numItems} unit(s) of the item ${item}.`;
+
+            let arrivalDetails = document.createElement("p");
+            arrivalDetails.textContent = `Your shipment will arrive on ${formattedDate}.`;
+
+            while (orderMessageDiv.firstChild) {
+                orderMessageDiv.removeChild(orderMessageDiv.firstChild);
+            }
+            orderMessageDiv.appendChild(thankYouMsg);
+            orderMessageDiv.appendChild(orderDetails);
+            orderMessageDiv.appendChild(arrivalDetails);
+            document.body.style.display = "block";
+        };
+
+
+                
     </script>
 </body>
 </html>
