@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Items</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">andrewvt97</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link" href="./index.html">Home</a>
+                <a class="nav-link active" aria-current="page" href="#">Register</a>
+              </div>
+            </div>
+          </div>
+      </nav>
+
+      <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4">Andrew's Amazing Store</h1>
+            <h7 id = "heading-message" class="lead">Sign up to become a member and gain access to tariff free goods! (Don't ask me how 🤫) </h7>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-10 col-md-6 mt-5 mb-3 py-4 px-5 bg-body-tertiary rounded-3"> 
+            <div class="pt-3 pb-3 px-5">
+                <div id = "reg-container">
+                  <h1 class="display-4 text-center">Sign Up</h1> 
+                  <form id="registration">
+                    <div class="mb-3">
+                      <label for="firstName" class="form-label">First Name <span class="text-danger">*</label>
+                      <input type="text" class="form-control" id="firstName" placeholder="Enter first name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="lastName" class="form-label">Last Name <span class="text-danger">*</label>
+                      <input type="text" class="form-control" id="lastName" placeholder="Enter last name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="email" class="form-label">Email address <span class="text-danger">*</label>
+                      <input type="email" class="form-control" id="email" placeholder="Enter email" required>
+                      <div id="emailHelp" class="form-text">We'll never share your email with anyone else. </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="password" class="form-label">Password <span class="text-danger">*</label>
+                      <input type="password" class="form-control" id="password" required>
+                      <div id="emailHelp" class="form-text">Must include '!' and '?' </div>
+                      <small id="password-error" class="text-danger d-block mt-2"></small>
+                    </div>
+                    <div class="mb-3">
+                      <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</label>
+                      <input type="date" class="form-control" id="dob" max="" required>
+                    </div>
+                    <button type="submit"  class="btn btn-primary" >Register </button>
+                    <small id="registration-error" class="text-danger d-block mt-2"></small>
+                  </form>
+                </div>     
+            </div>
+        </div>
+    </div>
+
+    
+
+      <footer class = "d-flex flex-wrap justify-content-center text-center align-items-center py-3 mt-5 border-top">
+        Designed by Andrew Thomas © March 27, 2025
+    </footer>
+
+    <script>
+
+        const dobInput = document.getElementById("dob");
+        const today = new Date().toISOString().split("T")[0]; 
+        dobInput.max = today;
+        
+
+        document.getElementById("registration").addEventListener("submit", (event) => {
+          event.preventDefault(); // Stop default submission
+          const passwordVal = document.getElementById("password").value;
+
+          const passwordError = document.getElementById("password-error");
+          const regError = document.getElementById("registration-error");
+          
+          
+          
+          passwordError.textContent = ""; // Clear previous errors
+          regError.textContent = ""; 
+          if (!passwordVal.includes("!") && !passwordVal.includes("?")) {
+            passwordError.textContent = "Password missing '!' and '?'.";
+            regError.textContent = "Registration Failed. Correct all errors."
+            return;
+          }
+          else if (!passwordVal.includes("!"))
+          {
+            passwordError.textContent = "Password missing '!'.";
+            regError.textContent = "Registration Failed. Correct all errors."
+            return
+          }
+          else if (!passwordVal.includes("?"))
+          {
+            passwordError.textContent = "Password missing '?'.";
+            regError.textContent = "Registration Failed. Correct all errors."
+            return
+          }
+
+          
+          // object
+          const user = {
+            fname: document.getElementById("firstName").value,
+            lname: document.getElementById("lastName").value,
+            email: document.getElementById("email").value,
+            password: passwordVal,
+            dob: dobInput.value
+          };
+
+          // change heading message
+          headingMessage = document.getElementById("heading-message")
+          headingMessage.textContent = "Thanks for joining us!"
+
+          registrationContainer = document.getElementById("reg-container")
+
+          // clear dom in this container
+          while (registrationContainer.firstChild) {
+            registrationContainer.removeChild(registrationContainer.firstChild);
+          }
+
+          const userInfo = document.createElement("div");
+          userInfo.className = "pt-3 px-4 text-center";
+          
+          // Add success message with updated hidden password
+          userInfo.innerHTML = `
+          <h1 class="text-center mb-3">Registration Successful!</h1>
+          <h4 class="text-center mb-4">You now have access to all of our amazing deals!</h4>
+
+          <div class="bg-light p-4 rounded text-start mx-auto" style="max-width: 400px;">
+            <p><strong>First Name:</strong> ${user.fname}</p>
+            <p><strong>Last Name:</strong> ${user.lname}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Password:</strong> ${'*'.repeat(user.password.length)}</p>
+            <p><strong>Date of Birth:</strong> ${user.dob}</p>
+          </div>
+
+          <div class="text-center mt-2">
+            <a href="./lab4.html" class="btn btn-primary">View Store</a>
+          </div>
+        `;
+
+          registrationContainer.appendChild(userInfo);
+
+        
+      });
+
+
+        
+    </script>
+   
+</body>
+</html>
