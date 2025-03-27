@@ -135,14 +135,14 @@
           }
 
           const userInfo = document.createElement("div");
-          userInfo.className = "pt-3 px-4";
+          userInfo.className = "pt-3 ";
           
           // Add success message with updated hidden password
           userInfo.innerHTML = `
           <h1 class="text-center mb-3">Registration Successful!</h1>
           <h4 class="text-center mb-4">You now have access to all of our amazing deals!</h4>
 
-          <div class="bg-light p-4 rounded mx-auto" style="max-width: 400px; text-align: left;">
+          <div class="bg-light rounded text-start mx-auto col-12 col-md-6">
             <p><strong>First Name:</strong> ${user.fname}</p>
             <p><strong>Last Name:</strong> ${user.lname}</p>
             <p><strong>Email:</strong> ${user.email}</p>
@@ -150,7 +150,7 @@
             <p><strong>Date of Birth:</strong> ${user.dob}</p>
           </div>
 
-          <div class="text-center mt-1">
+          <div class="text-center mt-2">
             <a href="./lab4.html" class="btn btn-primary">View Store</a>
           </div>
         `;
