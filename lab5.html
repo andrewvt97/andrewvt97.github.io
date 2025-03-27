@@ -141,13 +141,15 @@
           userInfo.innerHTML = `
           <h1 class="text-center mb-3">Registration Successful!</h1>
           <h4 class="text-center mb-4">You now have access to all of our amazing deals!</h4>
-
-          <div class="bg-light rounded text-start mx-auto col-12 col-md-6">
-            <p><strong>First Name:</strong> ${user.fname}</p>
-            <p><strong>Last Name:</strong> ${user.lname}</p>
-            <p><strong>Email:</strong> ${user.email}</p>
-            <p><strong>Password:</strong> ${'*'.repeat(user.password.length)}</p>
-            <p><strong>Date of Birth:</strong> ${user.dob}</p>
+          
+          <div class="row">
+            <div class="bg-light rounded text-start mx-auto col-12 col-md-6">
+              <p><strong>First Name:</strong> ${user.fname}</p>
+              <p><strong>Last Name:</strong> ${user.lname}</p>
+              <p><strong>Email:</strong> ${user.email}</p>
+              <p><strong>Password:</strong> ${'*'.repeat(user.password.length)}</p>
+              <p><strong>Date of Birth:</strong> ${user.dob}</p>
+            </div>
           </div>
 
           <div class="text-center mt-2">
