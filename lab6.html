@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Items</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand">andrewvt97</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+              <div class="navbar-nav">
+                <a class="nav-link" href="./index.html">Home</a>
+                <a class="nav-link active" aria-current="page" href="#">Pet Stock</a>
+              </div>
+            </div>
+          </div>
+      </nav>
+
+      <div class="jumbotron">
+        <div class="container">
+            <h1 class="display-4">Andrew's Amazing Store</h1>
+            <h7 id = "heading-message" class="lead">Check out our supply of tariff free pets! (Don't ask me how 🤫) </h7>
+        </div>
+    </div>
+
+    
+
+    <div class="container">
+        <div class="row ">
+            <div class = "col-12 d-flex justify-content-center">
+                <div class="card " style="width: 20rem;">
+                    <img id = "pet-photo" src="German_Shepherd.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 id = "pet-name" class="card-title"></h5>
+                        <p id = "pet-description" class="card-text"> </p>
+                        <button id = "view-pet-button" class="btn btn-primary" onclick="">  </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row justify-content-center">
+            <div id = "table-container" class = "col-md-8 mt-3 text-center">
+            </div> 
+        </div>  
+    </div>
+
+
+      <footer class = "d-flex flex-wrap justify-content-center text-center align-items-center py-3 mt-3 border-top">
+        Designed by Andrew Thomas © April 2, 2025
+    </footer>
+
+    <script>
+
+function getDogInfo() {
+            petPhoto = document.getElementById("pet-photo");
+            petPhoto.src = "German_Shepherd.jpg";
+
+            petName = document.getElementById("pet-name");
+            petName.textContent = "German Shepherd";
+
+            petDescription = document.getElementById("pet-description");
+            petDescription.textContent = "A highly intelligent and versatile working dog known for loyalty, strength, and confidence.";
+
+            tableContainer = document.getElementById("table-container");
+            while (tableContainer.firstChild) {
+                tableContainer.removeChild(tableContainer.firstChild);
+            }
+
+            viewPetButton = document.getElementById("view-pet-button");
+            viewPetButton.textContent = "View cat supply";
+            viewPetButton.onclick = getCatInfo;
+        }
+
+        async function getCatInfo(){
+            const url = "https://brianobruno.github.io/cats.json";
+            const options ={
+                method: 'GET',
+            };
+            
+            try{
+                const response = await fetch(url, options);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.text();
+                const myObj = JSON.parse(result);
+
+                petPhoto = document.getElementById("pet-photo");
+                petPhoto.src = myObj.catPhoto;
+
+                myObj.facts = myObj.facts.sort((a, b) => a.factId - b.factId);
+                // console.log(myObj);
+
+                petName = document.getElementById("pet-name")
+                petName.textContent = "Tabby"
+
+                petDescription = document.getElementById("pet-description")
+                petDescription.textContent = `An affectionate and playful cat known for its distinctive striped coat, curious nature, 
+                and strong hunting instincts.`
+
+                let rows = myObj.facts.map(fact => {
+                    return `
+                        <tr>
+                        <td>${fact.factId}</td>
+                        <td>${fact.text}</td>
+                        </tr>
+                    `;
+                    }).join('');
+
+                // Add table and header
+                tableContainer = document.getElementById("table-container");
+                const catInfo = document.createElement("div");
+                catInfo.innerHTML = `
+                <h3 > Some Fun Facts about Cats </h3>
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                    <tr>
+                        <th scope="col">factId</th>
+                        <th scope="col">fact</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    ${rows}
+                    </tbody>
+                </table>
+                `;
+                tableContainer.appendChild(catInfo)
+
+                viewPetButton = document.getElementById("view-pet-button");
+                viewPetButton.textContent = "View dog supply";
+                viewPetButton.onclick = getDogInfo;
+            }
+            
+            catch (error) {
+                console.error('Error fetching cat info:', error);
+            }
+
+            
+        }
+
+        getDogInfo();
+
+        
+        
+        
+    </script>
+   
+</body>
+</html>
