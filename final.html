@@ -128,6 +128,7 @@
               try {
                   const categories = await getCategories();
                   const container = document.getElementById("mealContainer");
+                  container.innerHTML = ''; 
                   for (const category of categories) {
                       const mealsUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`;
                       const options = { method: 'GET' };
@@ -163,6 +164,8 @@
               } catch (err) {
                   console.error('Error fetching meals:', err);
               }
+              const clearButton = document.querySelector('#searchForm button.btn-outline-secondary');
+              clearButton.disabled = false;
           }
 
           
@@ -193,16 +196,20 @@
         }
 
         function clearSearch() {
-            // Clear input
-            document.getElementById('searchInput').value = '';
 
-            // Remove storage
-            sessionStorage.removeItem('lastSearchQuery');
-            sessionStorage.removeItem('lastSearchResults');
+          const clearButton = document.querySelector('#searchForm button.btn-outline-secondary');
+          clearButton.disabled = true;
+          // Clear input
+          document.getElementById('searchInput').value = '';
 
-            // Reset view to default
-            document.getElementById('mealContainer').innerHTML = '';
-            displayRandom3MealsPerCategory();
+          // Remove storage
+          sessionStorage.removeItem('lastSearchQuery');
+          sessionStorage.removeItem('lastSearchResults');
+
+          // Reset view to default
+          document.getElementById('mealContainer').innerHTML = '';
+          displayRandom3MealsPerCategory();
+          
         }
     </script>
 </html>
