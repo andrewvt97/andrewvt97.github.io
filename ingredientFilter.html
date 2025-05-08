@@ -20,17 +20,29 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav">
                 <a class="nav-link" href="./final.html">Home</a>
-                <a class="nav-link active" aria-current="page" href="#">Ingredient Filter</a>
+                <a class="nav-link active" aria-current="page" href="#">Recipe Filter</a>
             </div>
         </div>
     </div>
 </nav>
 
-<div class="container mt-5 pt-5">
-    <h1 class="text-center mb-4">Filter Recipes by Ingredients</h1>
-    <p class="text-center">Select ingredients to include or exclude from recipes. You can also filter for recipes that have only the selected ingredients.</p>
+<div class="container mt-5 pt-5 mb-3">
+    <h1 class="text-center mb-4">Filter Recipes</h1>
+    <p class="text-center">
+        Select a category, area, and ingredients to include or exclude. You can also filter for recipes that match only the selected ingredients or use partial exclusion matching.
+    </p>
 
     <div id="filterSection">
+
+        <h6 class="fw-bold mt-4">Category</h6>
+        <select id="categorySelect" class="form-select mb-3">
+            <option value="">Any Category</option>
+        </select>
+
+        <h6 class="fw-bold mt-4">Area</h6>
+        <select id="areaSelect" class="form-select mb-3">
+            <option value="">Any Area</option>
+        </select>
         
         <h6 class="fw-bold mt-4">Include Ingredients</h6>
         <div class="position-relative">
@@ -38,6 +50,12 @@
             <ul id="includeDropdown" class="list-group position-absolute w-100 z-3 d-none" style="max-height: 30vh; overflow-y: auto;"></ul>
         </div>
         <div id="includeSelected" class="mb-3"></div>
+
+        <div id="includeSelected" class="mb-3"></div>
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="strictCheck">
+            <label class="form-check-label" for="strictCheck">Only recipes with exactly these ingredients</label>
+        </div>
 
         <h6 class="fw-bold mt-4">Exclude Ingredients</h6>
         <div class="position-relative">
@@ -47,9 +65,11 @@
         <div id="excludeSelected" class="mb-3"></div>
 
         <div class="form-check mb-3">
-            <input class="form-check-input" type="checkbox" id="strictCheck">
-            <label class="form-check-label" for="strictCheck">Only recipes with exactly these ingredients</label>
+            <input class="form-check-input" type="checkbox" id="partialExcludeCheck">
+            <label class="form-check-label" for="partialExcludeCheck">Exclude partially-matching ingredients</label>
         </div>
+
+        
 
         <button class="btn btn-success" onclick="applyFilter()">Apply Filter</button>
         <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
@@ -82,6 +102,7 @@
     }
 
     loadIngredients();
+    loadCategoriesAndAreas();
     loadAllMeals();
 
     const includeArray = [];
@@ -105,6 +126,40 @@
             console.error('Error fetching ingredient list:', error);
         }
     }
+
+        async function loadCategoriesAndAreas() {
+        const options = { method: 'GET' };
+        try {
+            const catRes = await fetch("https://www.themealdb.com/api/json/v1/1/categories.php", options);
+            const areaRes = await fetch("https://www.themealdb.com/api/json/v1/1/list.php?a=list", options);
+            if (!catRes.ok) throw new Error(`Category fetch failed: ${catRes.status}`);
+            if (!areaRes.ok) throw new Error(`Area fetch failed: ${areaRes.status}`);
+            const catData = await catRes.json();
+            const areaData = await areaRes.json();
+
+            // update category options
+            const catSelect = document.getElementById('categorySelect');
+            catData.categories.forEach(cat => {
+                const opt = document.createElement('option');
+                opt.value = cat.strCategory;
+                opt.textContent = cat.strCategory;
+                catSelect.appendChild(opt);
+            });
+
+
+            // update area options
+            const areaSelect = document.getElementById('areaSelect');
+            areaData.meals.forEach(area => {
+                const opt = document.createElement('option');
+                opt.value = area.strArea;
+                opt.textContent = area.strArea;
+                areaSelect.appendChild(opt);
+            });
+        } catch (e) {
+            console.error('Error loading categories or areas:', e);
+        }
+    }
+
 
     function showIncludeSuggestions() {
         const input = document.getElementById('includeInput').value.trim().toLowerCase();
@@ -293,16 +348,31 @@
 
     function applyFilter() {
         const strict = document.getElementById('strictCheck').checked;
+        const partialExclude = document.getElementById('partialExcludeCheck').checked;
+        const selectedCategory = document.getElementById('categorySelect').value;
+        const selectedArea = document.getElementById('areaSelect').value;
         const filtered = allMeals.filter(meal => {
             const mealSet = new Set(meal.ingredients);
 
             // checks if recipe contains every required ingredient
             const includesAll = includeArray.every(ing => mealSet.has(ing));
             // checks if recipe contains any unwanted ingredient
-            const excludesNone = excludeArray.every(ing => !mealSet.has(ing));
+            const excludesNone = excludeArray.every(ing => {
 
-            if (!includesAll || !excludesNone) return false; // doesn't add ingredient
-            if (strict) return mealSet.size === includeArray.length; // checks only required ingredients are there
+            // check if any ingredient partially matches (sugar -> granulated sugar, sugar snap peas)
+            if (partialExclude) {
+                return [...mealSet].every(item => !item.includes(ing));
+            } else {
+                return !mealSet.has(ing);
+            }
+            });
+
+            //doesn't add ingredient
+            if (!includesAll || !excludesNone) return false; 
+            if (strict && mealSet.size !== includeArray.length) return false;
+            if (selectedCategory && meal.category !== selectedCategory) return false;
+            if (selectedArea && meal.area !== selectedArea) return false;
+            
             return true;
         });
 
@@ -311,6 +381,9 @@
         sessionStorage.setItem('strictCheck', strict);
         sessionStorage.setItem('includeArray', JSON.stringify(includeArray));
         sessionStorage.setItem('excludeArray', JSON.stringify(excludeArray));
+        sessionStorage.setItem('partialExcludeCheck', partialExclude);
+        sessionStorage.setItem('categorySelect', selectedCategory);
+        sessionStorage.setItem('areaSelect', selectedArea);
 
         displayMeals(filtered);
 
@@ -330,6 +403,9 @@
         const savedInclude = JSON.parse(sessionStorage.getItem('includeArray'));
         const savedExclude = JSON.parse(sessionStorage.getItem('excludeArray'));
         const savedStrict = sessionStorage.getItem('strictCheck') === 'true';
+        const savedPartialExclude = sessionStorage.getItem('partialExcludeCheck') === 'true';
+        const savedCategory = sessionStorage.getItem('categorySelect') || '';
+        const savedArea = sessionStorage.getItem('areaSelect') || '';
 
         if (savedInclude) {
             // update include array
@@ -345,8 +421,11 @@
             updateExcludeDisplay();
         }
 
-        // update checkbox
+        // restore checkboxes and options
         document.getElementById('strictCheck').checked = savedStrict;
+        document.getElementById('partialExcludeCheck').checked = savedPartialExclude;
+        document.getElementById('categorySelect').value = savedCategory;
+        document.getElementById('areaSelect').value = savedArea;
     }
 
     
@@ -360,8 +439,11 @@
 
         // reset inputs
         document.getElementById('strictCheck').checked = false;
+        document.getElementById('partialExcludeCheck').checked = false;
         document.getElementById('includeInput').value = '';
         document.getElementById('excludeInput').value = '';
+        document.getElementById('categorySelect').value = '';
+        document.getElementById('areaSelect').value = '';
     }
 </script>
 
