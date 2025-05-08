@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Recipe Finder</title>
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" 
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body class="d-flex flex-column min-vh-100">
+        <nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand">Recipe Finder</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                  <div class="navbar-nav">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    <a class="nav-link" href="./ingredientFilter.html" >Ingredient Filter</a>
+                  </div>
+                </div>
+              </div>
+          </nav>
+
+
+          <div class="container mt-5">
+            <div class="bg-light p-4 rounded text-center">
+              <h1 class="display-5">Welcome to Recipe Finder</h1>
+              <p class="lead">Discover random meals across categories or search for your favorite recipes.</p>
+            </div>
+          </div>
+          
+          <div class="container mt-1 mb-3 pt-4">
+            <form class="d-flex justify-content-center" id="searchForm" role="search" onsubmit="searchMeals(event)">
+              <input id="searchInput" class="form-control me-2 bg-light text-dark w-50" type="search" placeholder="Search for a meal..." aria-label="Search" >
+              <button class="btn btn-outline-success me-1" type="submit" >Search</button>
+              <button class="btn btn-outline-secondary" type="button" onclick="clearSearch()">Clear </button>
+            </form>
+          </div>
+
+          <div id = "mealContainer" class = "container text-center">
+            
+          </div>
+
+
+            <footer class="py-3 my-2 border-top mt-auto text-center">
+              Designed by Andrew Thomas © May 6, 2025
+            </footer>
+    
+            
+        </div>
+
+    </body>
+    <script>
+    
+        // reset storage for other page, so that other page history isn't saved when switching pages
+        sessionStorage.removeItem('returningFromIngredientFilter');
+
+        // check if coming from back button
+        if (sessionStorage.getItem('returningFromHome') === 'true') {
+            const savedQuery = sessionStorage.getItem('lastSearchQuery');
+            const savedResults = JSON.parse(sessionStorage.getItem('lastSearchResults'));
+
+            if (savedQuery) {
+                const searchInput = document.getElementById('searchInput');
+                searchInput.value = savedQuery;
+                renderMeals(savedResults, savedQuery)
+
+            } else {
+                displayRandom3MealsPerCategory();
+            }
+            sessionStorage.removeItem('returningFromHome')
+        } else {
+            displayRandom3MealsPerCategory();
+        }
+
+
+        // display search results
+        function renderMeals(results, query){
+            const container = document.getElementById('mealContainer');
+            if (!results) {
+              container.innerHTML = '<p>No meals found.</p>';
+              return;
+            }
+            
+            let html = `<h4>Search Results for "${query}"</h4><div class="row">`;
+            results.forEach(meal => {
+                html += `
+                    <div class="col-12 col-md-4 mb-4">
+                        <a href="./meal.html?id=${meal.idMeal}" class="text-decoration-none text-dark" onclick="sessionStorage.setItem('returningFromHome', 'true')">
+                            <div class="card h-100">
+                                <img src="${meal.strMealThumb}" class="card-img-top" alt="${meal.strMeal}">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title text-decoration-underline">${meal.strMeal}</h5>
+                                </div>
+                            </div>
+                        </a>
+                    </div>`;
+            });
+            html += `</div>`;
+            container.innerHTML = html;
+        }
+          
+        // get all categories
+        async function getCategories() {
+            const url = "https://www.themealdb.com/api/json/v1/1/categories.php";
+            const options = { method: 'GET' };
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const result = await response.json();
+                const categoryList = result.categories.map(cat => cat.strCategory);
+                return categoryList;
+            } catch (error) {
+                console.error('Error fetching categories', error);
+            }
+        }
+
+          // get 3 random meals from each category
+          async function displayRandom3MealsPerCategory() {
+              try {
+                  const categories = await getCategories();
+                  const container = document.getElementById("mealContainer");
+                  for (const category of categories) {
+                      const mealsUrl = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`;
+                      const options = { method: 'GET' };
+                      const response = await fetch(mealsUrl, options);
+                      if (!response.ok) {
+                          throw new Error(`Failed to fetch meals for ${category}. Status: ${response.status}`);
+                      }
+                      const mealsData = await response.json();
+                      const meals = mealsData.meals;
+                      const randomIndices = new Set();
+                      while (randomIndices.size < Math.min(3, meals.length)) {
+                          randomIndices.add(Math.floor(Math.random() * meals.length));
+                      }
+                      const random3Meals = Array.from(randomIndices).map(index => meals[index]);
+                      
+                      let html = `<h2>${category}</h2><div class="row">`;
+                      random3Meals.forEach(meal => {
+                          html += `
+                              <div class="col-12 col-md-4 mb-4">
+                                  <a href="./meal.html?id=${meal.idMeal}" class="text-decoration-none text-dark">
+                                      <div class="card h-100">
+                                          <img src="${meal.strMealThumb}" class="card-img-top" alt="${meal.strMeal}">
+                                          <div class="card-body text-center">
+                                              <h5 class="card-title text-decoration-underline">${meal.strMeal}</h5>
+                                          </div>
+                                      </div>
+                                  </a>
+                              </div>`;
+                      });
+                      html += `</div>`;
+                      container.innerHTML += html;
+                  }
+              } catch (err) {
+                  console.error('Error fetching meals:', err);
+              }
+          }
+
+          
+
+          async function searchMeals(event) {
+            if (event) event.preventDefault();
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+            const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${encodeURIComponent(query)}`;
+            const options = { method: 'GET' };
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                const meals = data.meals;
+
+                // add to session storage for use with back button
+                sessionStorage.setItem('lastSearchQuery', query);
+                sessionStorage.setItem('lastSearchResults', JSON.stringify(meals));
+                const container = document.getElementById('mealContainer');
+                container.innerHTML = '';
+                renderMeals(meals, query)
+            } catch (err) {
+                console.error('Error searching meals:', err);
+            }
+        }
+
+        function clearSearch() {
+            // Clear input
+            document.getElementById('searchInput').value = '';
+
+            // Remove storage
+            sessionStorage.removeItem('lastSearchQuery');
+            sessionStorage.removeItem('lastSearchResults');
+
+            // Reset view to default
+            document.getElementById('mealContainer').innerHTML = '';
+            displayRandom3MealsPerCategory();
+        }
+    </script>
+</html>
+

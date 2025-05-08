@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder - Ingredient Filter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+</head>
+<body class="d-flex flex-column min-vh-100">
+
+<nav class="navbar navbar-expand-lg bg-dark border-bottom border-body fixed-top" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand">Recipe Finder</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-link" href="./final.html">Home</a>
+                <a class="nav-link active" aria-current="page" href="#">Ingredient Filter</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5 pt-5">
+    <h1 class="text-center mb-4">Filter Recipes by Ingredients</h1>
+    <p class="text-center">Select ingredients to include or exclude from recipes. You can also filter for recipes that have only the selected ingredients.</p>
+
+    <div id="filterSection">
+        
+        <h6 class="fw-bold mt-4">Include Ingredients</h6>
+        <div class="position-relative">
+            <input id="includeInput" type="text" class="form-control mb-2" placeholder="Type ingredient... (click to add)" oninput="showIncludeSuggestions()">
+            <ul id="includeDropdown" class="list-group position-absolute w-100 z-3 d-none" style="max-height: 30vh; overflow-y: auto;"></ul>
+        </div>
+        <div id="includeSelected" class="mb-3"></div>
+
+        <h6 class="fw-bold mt-4">Exclude Ingredients</h6>
+        <div class="position-relative">
+            <input id="excludeInput" type="text" class="form-control mb-2" placeholder="Type ingredient... (click to add)" oninput="showExcludeSuggestions()">
+            <ul id="excludeDropdown" class="list-group position-absolute w-100 z-3 d-none" style="max-height: 30vh; overflow-y: auto;"></ul>
+        </div>
+        <div id="excludeSelected" class="mb-3"></div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="strictCheck">
+            <label class="form-check-label" for="strictCheck">Only recipes with exactly these ingredients</label>
+        </div>
+
+        <button class="btn btn-success" onclick="applyFilter()">Apply Filter</button>
+        <button class="btn btn-secondary" onclick="clearFilters()">Clear</button>
+    </div>
+
+    <button id="backBtn" class="btn btn-secondary mb-3 d-none" onclick="backToFilters()">&#8592; Back</button>
+    <div id="mealContainer" class="mt-4 d-none"></div>
+</div>
+
+<footer class="py-3 my-2 border-top mt-auto text-center">
+    Designed by Andrew Thomas © May 6, 2025
+</footer>
+
+<script>
+
+    // remove saving for home page
+    sessionStorage.removeItem('returningFromHome')
+    if (sessionStorage.getItem('returningFromIngredientFilter') === 'true') {
+        const filtered = JSON.parse(sessionStorage.getItem('filteredMeals'));
+        if (filtered) {
+            displayMeals(filtered);
+            // don't display filter page
+            document.getElementById('filterSection').classList.add('d-none');
+            // display results of api call
+            document.getElementById('mealContainer').classList.remove('d-none');
+            document.getElementById('backBtn').classList.remove('d-none');
+        }
+        
+        sessionStorage.removeItem('returningFromIngredientFilter')
+    }
+
+    loadIngredients();
+    loadAllMeals();
+
+    const includeArray = [];
+    const excludeArray = [];
+    let allMeals = [];
+    let ingredientList = [];
+
+    
+
+    async function loadIngredients() {
+        const url = "https://www.themealdb.com/api/json/v1/1/list.php?i=list";
+        const options = { method: 'GET' };
+        try {
+            const response = await fetch(url, options);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            const data = await response.json();
+            ingredientList = data.meals.map(item => item.strIngredient.toLowerCase());
+        } catch (error) {
+            console.error('Error fetching ingredient list:', error);
+        }
+    }
+
+    function showIncludeSuggestions() {
+        const input = document.getElementById('includeInput').value.trim().toLowerCase();
+        const dropdown = document.getElementById('includeDropdown');
+        dropdown.innerHTML = '';
+        // hide on no input
+        if (!input) {
+            dropdown.classList.add('d-none');
+            return;
+        }
+
+        // check for any matches
+        const matches = ingredientList.filter(ing => ing.startsWith(input));
+        if (matches.length === 0) {
+            dropdown.classList.add('d-none');
+            return;
+        }
+
+        // show first 8 matches
+        matches.slice(0, 8).forEach(match => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action';
+            li.textContent = match;
+            li.setAttribute('onclick', `selectInclude('${match}')`);
+            dropdown.appendChild(li);
+        });
+        dropdown.classList.remove('d-none');
+    }
+
+    function showExcludeSuggestions() {
+        const input = document.getElementById('excludeInput').value.trim().toLowerCase();
+        const dropdown = document.getElementById('excludeDropdown');
+        dropdown.innerHTML = '';
+
+        // hide on no input
+        if (!input) {
+            dropdown.classList.add('d-none');
+            return;
+        }
+
+        // check for any matches
+        const matches = ingredientList.filter(ing => ing.startsWith(input));
+        if (matches.length === 0) {
+            dropdown.classList.add('d-none');
+            return;
+        }
+
+        // show first 8 matches
+        matches.slice(0, 8).forEach(match => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item list-group-item-action';
+            li.textContent = match;
+            li.setAttribute('onclick', `selectExclude('${match}')`);
+            dropdown.appendChild(li);
+        });
+        dropdown.classList.remove('d-none');
+    }
+
+    function selectInclude(value) {
+        document.getElementById('includeInput').value = value;
+        document.getElementById('includeDropdown').classList.add('d-none');
+        addInclude();
+    }
+
+    function selectExclude(value) {
+        document.getElementById('excludeInput').value = value;
+        document.getElementById('excludeDropdown').classList.add('d-none');
+        addExclude();
+    }
+
+    function addInclude() {
+        const value = document.getElementById('includeInput').value.trim().toLowerCase();
+        if (ingredientList.includes(value) && !includeArray.includes(value)) {
+            includeArray.push(value);
+            updateIncludeDisplay();
+        }
+        document.getElementById('includeInput').value = '';
+        document.getElementById('includeDropdown').classList.add('d-none');
+    }
+
+    function addExclude() {
+        const value = document.getElementById('excludeInput').value.trim().toLowerCase();
+        if (ingredientList.includes(value) && !excludeArray.includes(value)) {
+            excludeArray.push(value);
+            updateExcludeDisplay();
+        }
+        document.getElementById('excludeInput').value = '';
+        document.getElementById('excludeDropdown').classList.add('d-none');
+    }
+
+    function updateIncludeDisplay() {
+        const div = document.getElementById('includeSelected');
+        // adds badge with x button
+        div.innerHTML = includeArray.map((ing, index) => `
+            <span class="badge bg-primary me-1">
+                ${ing}
+                <span onclick="removeInclude(${index})" style="cursor:pointer; color:white; margin-left:5px;">&times;</span> 
+            </span>`).join('');
+    }
+
+    function updateExcludeDisplay() {
+        const div = document.getElementById('excludeSelected');
+        // adds badge with x button
+        div.innerHTML = excludeArray.map((ing, index) => `
+            <span class="badge bg-danger me-1">
+                ${ing}
+                <span onclick="removeExclude(${index})" style="cursor:pointer; color:white; margin-left:5px;">&times;</span>
+            </span>`).join('');
+    }
+
+    function removeInclude(index) {
+        includeArray.splice(index, 1);
+        updateIncludeDisplay();
+    }
+
+    function removeExclude(index) {
+        excludeArray.splice(index, 1);
+        updateExcludeDisplay();
+    }
+
+    async function loadAllMeals() {
+        const letters = 'abcdefghijklmnopqrstuvwxyz';
+        const options = { method: 'GET' };
+        try {
+            // make 26 calls to get all recipes (no premium version)
+            const fetches = letters.split('').map(async (letter) => {
+                const url = `https://www.themealdb.com/api/json/v1/1/search.php?f=${letter}`;
+                try {
+                    const response = await fetch(url, options);
+                    if (!response.ok) {
+                        console.warn(`HTTP error for letter "${letter}". Status: ${response.status}`);
+                        return [];
+                    }
+                    const data = await response.json();
+                    return data.meals || [];
+                } catch (err) {
+                    console.error(`Error fetching meals for letter "${letter}":`, err);
+                    return [];
+                }
+            });
+
+            // array of promises
+            const results = await Promise.all(fetches);
+
+            // flatten into one array
+            allMeals = results.flat().map(meal => ({
+                idMeal: meal.idMeal,
+                name: meal.strMeal,
+                category: meal.strCategory,
+                area: meal.strArea,
+                
+                ingredients: Array.from({ length: 20 }, (_, i) => meal[`strIngredient${i + 1}`]) // creates array of size 20
+                    .filter(ing => ing && ing.trim().length > 0) // filters invalid ingredients
+                    .map(ing => ing.toLowerCase()),
+                thumb: meal.strMealThumb
+            }));
+        } catch (error) {
+            console.error('Error loading all meals:', error);
+        }
+}
+
+    function displayMeals(meals) {
+        const container = document.getElementById('mealContainer');
+        if (meals.length === 0) {
+            container.innerHTML = '<p>No recipes found.</p>';
+            return;
+        }
+        let html = '<div class="row">';
+        meals.forEach(meal => {
+            html += `
+                <div class="col-12 col-md-4 mb-4">
+                    <a href="./meal.html?id=${meal.idMeal}" onclick="sessionStorage.setItem('returningFromIngredientFilter', 'true')" class="text-decoration-none text-dark">
+                        <div class="card h-100">
+                            <img src="${meal.thumb}" class="card-img-top" alt="${meal.name}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title text-decoration-underline">${meal.name}</h5>
+                                <p class="card-text">${meal.category}${meal.area ? ' | ' + meal.area : ''}</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+    }
+
+    function applyFilter() {
+        const strict = document.getElementById('strictCheck').checked;
+        const filtered = allMeals.filter(meal => {
+            const mealSet = new Set(meal.ingredients);
+
+            // checks if recipe contains every required ingredient
+            const includesAll = includeArray.every(ing => mealSet.has(ing));
+            // checks if recipe contains any unwanted ingredient
+            const excludesNone = excludeArray.every(ing => !mealSet.has(ing));
+
+            if (!includesAll || !excludesNone) return false; // doesn't add ingredient
+            if (strict) return mealSet.size === includeArray.length; // checks only required ingredients are there
+            return true;
+        });
+
+        // save for back button
+        sessionStorage.setItem('filteredMeals', JSON.stringify(filtered));
+        sessionStorage.setItem('strictCheck', strict);
+        sessionStorage.setItem('includeArray', JSON.stringify(includeArray));
+        sessionStorage.setItem('excludeArray', JSON.stringify(excludeArray));
+
+        displayMeals(filtered);
+
+        // shows api call results
+        document.getElementById('filterSection').classList.add('d-none');
+        document.getElementById('mealContainer').classList.remove('d-none');
+        document.getElementById('backBtn').classList.remove('d-none');
+    }
+
+    function backToFilters() {
+        // removes api call results and shows filter sections
+        document.getElementById('filterSection').classList.remove('d-none');
+        document.getElementById('mealContainer').classList.add('d-none');
+        document.getElementById('backBtn').classList.add('d-none');
+
+        // get saved filters to show when using back button
+        const savedInclude = JSON.parse(sessionStorage.getItem('includeArray'));
+        const savedExclude = JSON.parse(sessionStorage.getItem('excludeArray'));
+        const savedStrict = sessionStorage.getItem('strictCheck') === 'true';
+
+        if (savedInclude) {
+            // update include array
+            includeArray.length = 0;
+            includeArray.push(...savedInclude);
+            updateIncludeDisplay();
+        }
+
+        if (savedExclude) {
+            // update exclude array
+            excludeArray.length = 0;
+            excludeArray.push(...savedExclude);
+            updateExcludeDisplay();
+        }
+
+        // update checkbox
+        document.getElementById('strictCheck').checked = savedStrict;
+    }
+
+    
+
+    function clearFilters() {
+        // reset badges
+        includeArray.length = 0;
+        excludeArray.length = 0;
+        updateIncludeDisplay();
+        updateExcludeDisplay();
+
+        // reset inputs
+        document.getElementById('strictCheck').checked = false;
+        document.getElementById('includeInput').value = '';
+        document.getElementById('excludeInput').value = '';
+    }
+</script>
+
+</body>
+</html>
